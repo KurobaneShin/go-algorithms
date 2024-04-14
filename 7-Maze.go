@@ -12,7 +12,7 @@ var dir = [][]int{
 	{-1, 0},
 }
 
-func Walk(maze []string, wall string, curr Point, end Point, seen [][]bool, path []Point) bool {
+func Walk(maze []string, wall string, curr Point, end Point, seen *[][]bool, path *[]Point) bool {
 	// off the map
 	if curr.x < 0 || curr.x >= len(maze[0]) || curr.y < 0 || curr.y >= len(maze) {
 		return false
@@ -23,19 +23,19 @@ func Walk(maze []string, wall string, curr Point, end Point, seen [][]bool, path
 		return false
 	}
 
-	if curr.y == end.y && curr.x == end.y {
+	if curr.y == end.y && curr.x == end.x {
 		// add end to path
-		path = append(path, curr)
+		*path = append(*path, end)
 		return true
 	}
 
-	if seen[curr.y][curr.x] {
+	if (*seen)[curr.y][curr.x] {
 		return false
 	}
 
 	// add path
-	seen[curr.y][curr.x] = true
-	path = append(path, curr)
+	(*seen)[curr.y][curr.x] = true
+	*path = append(*path, curr)
 
 	// recurse
 	for i := 0; i < len(dir); i++ {
@@ -46,7 +46,7 @@ func Walk(maze []string, wall string, curr Point, end Point, seen [][]bool, path
 	}
 
 	// pop from path
-	path = path[:len(path)-1]
+	*path = (*path)[:len(*path)-1]
 	return false
 }
 
@@ -58,7 +58,7 @@ func MazeSolver(maze []string, wall string, start Point, end Point) []Point {
 		seen[i] = make([]bool, len(maze[0]))
 	}
 
-	Walk(maze, wall, start, end, seen, path)
+	Walk(maze, wall, start, end, &seen, &path)
 
 	return path
 }
