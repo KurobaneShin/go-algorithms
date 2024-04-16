@@ -11,6 +11,21 @@ type LinkedListNode[T any] struct {
 	next  *LinkedListNode[T]
 }
 
+func (lk *LinkedList[T]) Prepend(item T) {
+	node := &LinkedListNode[T]{value: item}
+
+	lk.Length++
+
+	if lk.head == nil {
+		lk.head = node
+		return
+	}
+
+	node.next = lk.head
+	lk.head.prev = node
+	lk.head = node
+}
+
 func (lk *LinkedList[T]) Get(idx int) T {
 
 	curr := lk.head
