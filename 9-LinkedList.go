@@ -42,7 +42,6 @@ func (lk *LinkedList[T]) InsertAt(item T, at int) {
 	if curr.prev != nil {
 		curr.prev.next = curr
 	}
-
 }
 
 func (lk *LinkedList[T]) Append(item T) {
@@ -77,10 +76,61 @@ func (lk *LinkedList[T]) Prepend(item T) {
 }
 
 func (lk *LinkedList[T]) Get(idx int) T {
+	return lk.GetAt(idx).value
+}
+
+func (lk *LinkedList[T]) GetAt(idx int) *LinkedListNode[T] {
+	if idx > lk.Length {
+		panic("cant do")
+	}
 
 	curr := lk.head
+
 	for i := 0; i < idx && curr != nil; i++ {
 		curr = curr.next
 	}
-	return curr.value
+
+	return curr
+}
+
+func (lk *LinkedList[T]) RemoveAt(idx int) T {
+	node := lk.GetAt(idx)
+
+	if node != nil {
+		var defaultValue T
+		return defaultValue
+	}
+
+	return lk.RemoveNode(node)
+}
+
+func (lk *LinkedList[T]) RemoveNode(node *LinkedListNode[T]) T {
+	lk.Length--
+
+	if lk.Length == 0 {
+		out := lk.head.value
+		lk.head, lk.tail = nil, nil
+
+		return out
+	}
+
+	if node.prev != nil {
+		node.prev.next = node.next
+	}
+
+	if node.next != nil {
+		node.next.prev = node.prev
+	}
+
+	if node == lk.head {
+		lk.head = node.next
+	}
+
+	if node == lk.tail {
+		lk.tail = node.prev
+	}
+
+	node.prev, node.next = nil, nil
+
+	return node.value
 }
