@@ -1,5 +1,7 @@
 package main
 
+import "reflect"
+
 type LinkedList[T any] struct {
 	Length int
 	head   *LinkedListNode[T]
@@ -58,6 +60,8 @@ func (lk *LinkedList[T]) Append(item T) {
 
 	node.prev = lk.tail
 	lk.tail.next = node
+
+	lk.tail = node
 }
 
 func (lk *LinkedList[T]) Prepend(item T) {
@@ -96,12 +100,31 @@ func (lk *LinkedList[T]) GetAt(idx int) *LinkedListNode[T] {
 func (lk *LinkedList[T]) RemoveAt(idx int) T {
 	node := lk.GetAt(idx)
 
-	if node != nil {
+	if node == nil {
 		var defaultValue T
 		return defaultValue
 	}
 
 	return lk.RemoveNode(node)
+}
+
+func (lk *LinkedList[T]) Remove(item T) T {
+	curr := lk.head
+
+	for i := 0; curr != nil && i < lk.Length; i++ {
+		if reflect.DeepEqual(curr.value, item) {
+			break
+		}
+
+		curr = curr.next
+	}
+
+	if curr == nil {
+		var defaultValue T
+		return defaultValue
+	}
+
+	return lk.RemoveNode(curr)
 }
 
 func (lk *LinkedList[T]) RemoveNode(node *LinkedListNode[T]) T {
